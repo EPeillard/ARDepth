@@ -1,5 +1,10 @@
 ﻿Shader "Custom/MobileARShadow"
 {
+	Properties
+	{
+		_Intensity("Intensity", FLOAT) = 0.1
+	}
+
 	SubShader{
 		Pass{
 
@@ -51,12 +56,14 @@
 		return o;
 	}
 
+	float _Intensity;
+
 	fixed4 frag(v2f i) : COLOR{
 
 		// 6.) The LIGHT_ATTENUATION samples the shadowmap (using the coordinates calculated by TRANSFER_VERTEX_TO_FRAGMENT
 		// and stored in the structure defined by LIGHTING_COORDS), and returns the value as a float.
 		float attenuation = LIGHT_ATTENUATION(i);
-		return fixed4(fixed3(0.1,0.1,0.1)* (1-attenuation),attenuation);
+		return fixed4(fixed3(1,1,1)* _Intensity * (1-attenuation),attenuation);
 	}
 
 		ENDCG
@@ -111,12 +118,14 @@
 		return o;
 	}
 
+	float _Intensity;
+
 	fixed4 frag(v2f i) : COLOR{
 
 		// 6.) The LIGHT_ATTENUATION samples the shadowmap (using the coordinates calculated by TRANSFER_VERTEX_TO_FRAGMENT
 		// and stored in the structure defined by LIGHTING_COORDS), and returns the value as a float.
 		float attenuation = LIGHT_ATTENUATION(i);
-		return fixed4(fixed3(0.1,0.1,0.1)* (1-attenuation),attenuation);
+		return fixed4(fixed3(1,1,1)* _Intensity * (1 - attenuation),attenuation);
 	}
 
 		ENDCG

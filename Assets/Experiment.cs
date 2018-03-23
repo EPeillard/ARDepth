@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
+//#define WINDOWS_UWP
 #if WINDOWS_UWP
 using System;
 using Windows.Storage;
@@ -26,6 +27,16 @@ public class Experiment : MonoBehaviour {
     private List<Run> refExp;
     private Plane[] planes;
     private string totalLog ="";
+    private TextMesh display;
+    private TextToSpeech textToSpeech;
+
+    public bool ExperimentRunning
+    {
+        get
+        {
+            return experimentRunning;
+        }
+    }
 
     // Use this for initialization
     void Start ()
@@ -45,7 +56,13 @@ public class Experiment : MonoBehaviour {
 				refExp.Add (run);
 			}
 		}
-	}
+
+        display = FindObjectOfType<TextMesh>();
+        display.gameObject.SetActive(false);
+
+        textToSpeech = FindObjectOfType<TextToSpeech>();
+        textToSpeech.Voice = TextToSpeechVoice.Default;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -55,7 +72,7 @@ public class Experiment : MonoBehaviour {
             FlushExpLog();
         }
 
-        if (Input.GetMouseButtonDown(2) && !experimentRunning)
+        if (Input.GetMouseButtonUp(2) && !experimentRunning)
         {
             experimentRunning = true;
             Debug.Log("Experiment Started");
@@ -70,9 +87,21 @@ public class Experiment : MonoBehaviour {
     IEnumerator runExperiment()
     {
         planeRef.SetActive(false);
+        display.gameObject.SetActive(true);
+        display.text = fileName;
+
+        yield return new WaitForEndOfFrame();
+
+        while (!Input.GetMouseButtonDown(2))
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        display.gameObject.SetActive(false);
+
 
         bool intro = true;
-        expLog("n,rep,i;dist;answer,time");
+        expLog("n,rep,i;dist,shadow;answer,time");
 
         for (int rep = 0; rep <= repetitions; rep++)
         {
@@ -93,6 +122,14 @@ public class Experiment : MonoBehaviour {
                 if (intro && i > preTests)
                 {
                     intro = false;
+
+                    textToSpeech.StartSpeaking("This is the end of the practice session. Let's start the experiment. ");
+
+                    while (!Input.GetMouseButton(2))
+                    {
+                        yield return new WaitForEndOfFrame();
+                    }
+                                        
                     break;
                 }
 
@@ -101,11 +138,13 @@ public class Experiment : MonoBehaviour {
                 log = fileName + "," + rep + "," + i + ";";
                 float time = Time.time;
 
-                var dist = UnityEngine.Random.Range(3, 6);
+                var dist = UnityEngine.Random.Range(3.0f, 6.0f);
+                var rot = UnityEngine.Random.Range(0, 360);
 
                 var g = Instantiate(modele, this.gameObject.transform);
                 g.transform.position = gameObject.transform.position;
                 g.transform.Translate(gameObject.transform.TransformDirection(Vector3.forward) * dist, Space.World);
+                g.transform.Rotate(Vector3.up * rot,Space.World);
 
                 switch (run.shadowType)
                 {
@@ -129,7 +168,9 @@ public class Experiment : MonoBehaviour {
                         break;
                 }
 
-                log += "" + run.dist + ";";
+                log += "" + run.dist + "," + run.shadowType.ToString() + ";";
+
+                textToSpeech.StartSpeaking("Target " + (run.dist - 2).ToString());
 
                 //Answer
                 while (!Input.GetMouseButton(2))

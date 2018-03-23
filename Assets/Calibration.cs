@@ -8,20 +8,22 @@ public class Calibration : MonoBehaviour {
     public GameObject spatialMapping;
 
     GameObject cam;
+    private Experiment exp;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         cam = GameObject.Find("Main Camera");
+        exp = FindObjectOfType<Experiment>();
         //spatialMapping.enabled = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetMouseButton(0) && Input.GetMouseButton(1))
+        if (Input.GetMouseButton(0) && Input.GetMouseButton(1) && !exp.ExperimentRunning)
         {
             spatialMapping.SetActive(true);
         }
-        if(Input.GetMouseButtonUp(0) && Input.GetMouseButton(1) || Input.GetMouseButtonUp(1) && Input.GetMouseButton(0) || Input.GetMouseButtonUp(1) && Input.GetMouseButtonUp(0))
+        if((Input.GetMouseButtonUp(0) && Input.GetMouseButton(1) || Input.GetMouseButtonUp(1) && Input.GetMouseButton(0) || Input.GetMouseButtonUp(1) && Input.GetMouseButtonUp(0)) && !exp.ExperimentRunning)
         {
             var hit = new RaycastHit();
             if (Physics.Raycast(cam.transform.position, cam.transform.TransformDirection(Vector3.forward), out hit))
