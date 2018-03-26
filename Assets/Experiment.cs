@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 public class Experiment : MonoBehaviour {
 
-	public struct Run { public ShadowType shadowType; public int dist; };
+	public struct Run { public ShadowType shadowType; public float dist; };
 
     public int preTests = 10;
     public int repetitions = 3;
@@ -43,12 +43,12 @@ public class Experiment : MonoBehaviour {
     {
         //Define each factors' possibilities
 		ShadowType[] shadows = new ShadowType[] { ShadowType.Off, ShadowType.Round, ShadowType.Hard, ShadowType.Soft};
-		int[] dists = new int[] { 3,4,5,6 };
+		float[] dists = new float[] { 3,4.5f,6,7.5f };
 
         //Create a List containing each trials
         refExp = new List<Run>();
 		foreach (ShadowType shadow in shadows) {
-			foreach (int d in dists) {
+			foreach (float d in dists) {
 				var run = new Run ();
 				run.shadowType = shadow;
 				run.dist = d;
@@ -101,7 +101,7 @@ public class Experiment : MonoBehaviour {
 
 
         bool intro = true;
-        expLog("n,rep,i;dist,shadow;answer,time");
+        expLog("n,rep,i;dist,shadow;answer,time \n height: "+(gameObject.transform.position.y-transform.parent.position.y));
 
         for (int rep = 0; rep <= repetitions; rep++)
         {
@@ -170,7 +170,7 @@ public class Experiment : MonoBehaviour {
 
                 log += "" + run.dist + "," + run.shadowType.ToString() + ";";
 
-                textToSpeech.StartSpeaking("Target " + (run.dist - 2).ToString());
+                textToSpeech.StartSpeaking("Target " + ((int)(run.dist/1.5 - 1)).ToString());
 
                 //Answer
                 while (!Input.GetMouseButton(2))
