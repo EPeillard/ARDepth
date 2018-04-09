@@ -43,7 +43,7 @@ public class Experiment : MonoBehaviour {
     {
         //Define each factors' possibilities
 		ShadowType[] shadows = new ShadowType[] { ShadowType.Off, ShadowType.Round, ShadowType.Hard, ShadowType.Soft};
-		float[] dists = new float[] { 3,4.5f,6,7.5f };
+		float[] dists = new float[] { 6,7.5f,9,10.5f };
 
         //Create a List containing each trials
         refExp = new List<Run>();
@@ -58,7 +58,6 @@ public class Experiment : MonoBehaviour {
 		}
 
         display = FindObjectOfType<TextMesh>();
-        display.gameObject.SetActive(false);
 
         textToSpeech = FindObjectOfType<TextToSpeech>();
         textToSpeech.Voice = TextToSpeechVoice.Default;
@@ -153,24 +152,27 @@ public class Experiment : MonoBehaviour {
                         break;
                     case ShadowType.Round:
                         QualitySettings.shadows = ShadowQuality.All;
+                        QualitySettings.shadowResolution = ShadowResolution.Low;
                         g.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                        g.GetComponentInChildren<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+                        //g.GetComponentInChildren<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
                         break;
                     case ShadowType.Hard:
                         QualitySettings.shadows = ShadowQuality.HardOnly;
+                        QualitySettings.shadowResolution = ShadowResolution.VeryHigh;
                         g.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-                        g.GetComponentInChildren<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                        //g.GetComponentInChildren<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                         break;
                     case ShadowType.Soft:
                         QualitySettings.shadows = ShadowQuality.All;
+                        QualitySettings.shadowResolution = ShadowResolution.Low;
                         g.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-                        g.GetComponentInChildren<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                        //g.GetComponentInChildren<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                         break;
                 }
 
                 log += "" + run.dist + "," + run.shadowType.ToString() + ";";
 
-                textToSpeech.StartSpeaking("Target " + ((int)(run.dist/1.5 - 1)).ToString());
+                textToSpeech.StartSpeaking("Target " + ((int)(run.dist/1.5 - 3)).ToString());
 
                 //Answer
                 while (!Input.GetMouseButton(2))

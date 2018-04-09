@@ -38,9 +38,9 @@ public class Calibration : MonoBehaviour {
                 var rot = Vector3.Angle(fwrdSpace,fwrdCam);*/
                 gameObject.transform.LookAt(hit.point);
 
-                var p = gameObject.GetComponentInChildren<Experiment>().gameObject.transform.position;
+                /*var p = gameObject.GetComponentInChildren<Experiment>().gameObject.transform.position;
                 p.y = cam.transform.position.y;
-                gameObject.GetComponentInChildren<Experiment>().gameObject.transform.position = p;
+                gameObject.GetComponentInChildren<Experiment>().gameObject.transform.position = p;*/
             }
             spatialMapping.SetActive(false);
         }
