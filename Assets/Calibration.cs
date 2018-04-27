@@ -8,12 +8,12 @@ public class Calibration : MonoBehaviour {
     public GameObject spatialMapping;
 
     GameObject cam;
-    private Experiment exp;
+    private Experiment2 exp;
 
     // Use this for initialization
     void Start () {
         cam = GameObject.Find("Main Camera");
-        exp = FindObjectOfType<Experiment>();
+        exp = FindObjectOfType<Experiment2>();
         //spatialMapping.enabled = false;
 	}
 	
